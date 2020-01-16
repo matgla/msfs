@@ -1,4 +1,4 @@
-// This file is part of MSOS project. 
+// This file is part of MSOS project.
 // Copyright (C) 2020 Mateusz Stadnik
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#pragma once 
+#pragma once
 
 #include <cstdint>
 
-namespace msos 
+#include "msfs/i_block_device.hpp"
+
+namespace msfs
 {
-namespace fs 
-{
-namespace msramfs 
+namespace msramfs
 {
 
 template <std::size_t BlockSize>
@@ -36,7 +36,7 @@ struct SuperBlock
 };
 
 template <typename SizeType, std::size_t NumberOfDirectPointers, std::size_t BlockSize>
-struct INode 
+struct INode
 {
     uint8_t valid;
     SizeType file_size;
@@ -47,9 +47,8 @@ struct INode
     constexpr static inodes_per_block = BlockSize / i_node_size;
 };
 
-using INode16 = INode<uint16_t>
+using INode16 = INode<uint16_t>;
 
-} // namespace msramfs 
-} // namespace fs
-} // namespace msos 
+} // namespace msfs
+} // namespace msos
 
