@@ -21,8 +21,24 @@ namespace msfs
 
 BlockDevice::BlockDevice(const std::size_t block_size)
     : block_size_(block_size)
+    , mounted_(false)
 {
 
+}
+
+bool BlockDevice::mounted() const 
+{
+    return mounted_;
+}
+
+void BlockDevice::mount() 
+{
+    mounted_ = true;
+}
+
+void BlockDevice::umount()
+{
+    mounted_ = false;
 }
 
 std::size_t BlockDevice::block_size() const

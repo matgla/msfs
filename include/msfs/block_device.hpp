@@ -33,12 +33,18 @@ public:
     virtual ~BlockDevice() = default;
 
     std::size_t block_size() const;
+    std::size_t number_of_blocks() const;
+
+    bool mounted() const;
+    void mount() const;
+    void umount() const;
 
     virtual int read(std::size_t block_number, StreamType& stream) = 0;
     virtual int write(std::size_t block_number, const StreamType& stream) = 0;
-
+    
 private:
     std::size_t block_size_;
+    std::size_t number_of_blocks_;
 };
 
 } // namespace msfs

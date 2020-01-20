@@ -1,4 +1,4 @@
-// This file is part of MSOS project.
+// This file is part of MSOS project. 
 // Copyright (C) 2020 Mateusz Stadnik
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,43 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#pragma once
+#pragma once 
 
-#include <cstdint>
-
-#include "msfs/i_block_device.hpp"
+#include "msos/block_device.hpp"
 
 namespace msfs
 {
-namespace msramfs
-{
 
-struct SuperBlock
+enum class MountReturnCode
 {
-    char magic_byte[4] = {'M', 'R', "F", "S"};
-    uint16_t number_of_data_blocks;
-    uint16_t number_of_inodes;
-    std::size_t block_size;
-    std::unique_ptr<uint8_t[]> free_blocks_bitmap;
+    Ok
 };
 
-struct INode
+enum class FormatReturnCode
 {
-    uint8_t valid;
-    SizeType file_size;
-    SizeType direct_pointers[NumberOfDirectPointers];
-    SizeType indirect_pointer;
-
-    constexpr static size = sizeof(INode);
+    Ok,
+    DeviceIsMounted,
+    BlockNumbersMismatch,
+    WrongBlockSize
 };
 
-class MsRamFs : public FileSystem 
+class FileSystem
 {
-public: 
-    static FormatReturnCode format(BlockDevice& device);
+public:
+    virtual ~FileSystem() = default;
 
+    virtual MountReturnCode mount(BlockDevice& device) = 0;
+    
+    virtual std::size_t create() = 0; 
+    virtual bool remove(std::size_t inode_index) = 0;
+    virtual std::size_t stat(std::size_t inode_index) = 0;
+
+protected:
+    static bool mounted_;
 };
 
-} // namespace msfs
-} // namespace msos
+} // namespace msfs 
 

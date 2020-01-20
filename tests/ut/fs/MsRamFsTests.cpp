@@ -21,10 +21,12 @@
 namespace msfs
 {
 
-TEST(TestRamFs, Pass)
+TEST(MsRamFsShould, FormatMemory)
 {
     BlockDeviceDriverStub<32, 4> block_device;
-    EXPECT_EQ(1, 1);
+        
+     
 }
 
 } // namespace msfs
+

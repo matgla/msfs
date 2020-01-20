@@ -44,6 +44,8 @@ public:
         const std::size_t size_to_copy = stream.size() >= BlockSize ? BlockSize : stream.size();
 
         std::copy(data_[block_number].begin(), data_[block_number].end(), stream.begin());
+        
+        return ReturnCode::Ok;
     }
 
     int write(std::size_t block_number, const StreamType& stream) override
@@ -59,6 +61,8 @@ public:
         }
 
         std::copy(stream.begin(), stream.end(), std::begin(data_[block_number]));
+        
+        return ReturnCode::Ok; 
     }
 
 private:
