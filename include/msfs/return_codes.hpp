@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <gtest/gtest.h>
-
-#include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
+#pragma once
 
 namespace msfs
 {
 
-TEST(TestRamFs, Pass)
+enum ReturnCode
 {
-    BlockDeviceDriverStub<32, 4> block_device;
-    EXPECT_EQ(1, 1);
-}
+    Ok,
+    WrongBlockNumber,
+    NotEnoughSpaceInBlock
+};
 
 } // namespace msfs

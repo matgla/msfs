@@ -14,17 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <gtest/gtest.h>
-
-#include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
+#include "msfs/block_device.hpp"
 
 namespace msfs
 {
 
-TEST(TestRamFs, Pass)
+BlockDevice::BlockDevice(const std::size_t block_size)
+    : block_size_(block_size)
 {
-    BlockDeviceDriverStub<32, 4> block_device;
-    EXPECT_EQ(1, 1);
+
+}
+
+std::size_t BlockDevice::block_size() const
+{
+    return block_size_;
 }
 
 } // namespace msfs

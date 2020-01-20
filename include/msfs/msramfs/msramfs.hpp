@@ -43,7 +43,7 @@ struct INode
     SizeType direct_pointers[NumberOfDirectPointers];
     SizeType indirect_pointer;
 
-    constexpr static i_node_size = sizeof(INode<SizeType>, 4);
+    constexpr static i_node_size = sizeof(INode<SizeType>);
     constexpr static inodes_per_block = BlockSize / i_node_size;
 };
 

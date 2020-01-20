@@ -1,5 +1,5 @@
 # This file is part of MSOS project. This is simple OS for embedded development devices.
-# Copyright (C) 2019 Mateusz Stadnik
+# Copyright (C) 2020 Mateusz Stadnik
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,25 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_executable(fs_tests)
+file(GLOB_RECURSE gsl_srcs
+    "gsl/include/*."
+    )
 
-target_sources(fs_tests
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/stubs/BlockDeviceDriverStub.hpp
+set(Gsl_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/gsl/gsl/include" CACHE STRING "path to GSL sources" FORCE)
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/MsRamFsTests.cpp
-)
-
-target_link_libraries(fs_tests
-    PRIVATE
-        gtest
-        gmock
-        gtest_main
-        msfs_msramfs
-)
-
-target_include_directories(fs_tests
-    PUBLIC
-        "${PROJECT_SOURCE_DIR}"
-)
-
+add_library(gsl INTERFACE)
+target_sources(gsl INTERFACE ${gsl_srcs})
+target_include_directories(gsl INTERFACE ${Gsl_INCLUDE_DIR})

@@ -1,6 +1,6 @@
 [submodule "tests/ut/lib/googletest"]
 	path = tests/ut/lib/googletest
 	url = https://github.com/google/googletest.git
-[submodule "lib/gsl"]
-	path = lib/gsl
+[submodule "lib/gsl/gsl"]
+	path = lib/gsl/gsl
 	url = https://github.com/microsoft/GSL.git

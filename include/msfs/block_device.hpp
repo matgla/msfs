@@ -14,17 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <gtest/gtest.h>
+#pragma once
 
-#include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
+#include <cstdint>
+
+#include <gsl/span>
 
 namespace msfs
 {
 
-TEST(TestRamFs, Pass)
+class BlockDevice
 {
-    BlockDeviceDriverStub<32, 4> block_device;
-    EXPECT_EQ(1, 1);
-}
+public:
+    using StreamType = gsl::span<uint8_t>;
+
+    BlockDevice(const std::size_t block_size);
+
+    virtual ~BlockDevice() = default;
+
+    std::size_t block_size() const;
+
+    virtual int read(std::size_t block_number, StreamType& stream) = 0;
+    virtual int write(std::size_t block_number, const StreamType& stream) = 0;
+
+private:
+    std::size_t block_size_;
+};
 
 } // namespace msfs
