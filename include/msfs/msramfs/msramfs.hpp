@@ -18,7 +18,8 @@
 
 #include <cstdint>
 
-#include "msfs/i_block_device.hpp"
+#include "msfs/block_device.hpp"
+#include "msfs/filesystem.hpp"
 
 namespace msfs
 {
@@ -27,28 +28,36 @@ namespace msramfs
 
 struct SuperBlock
 {
-    char magic_byte[4] = {'M', 'R', "F", "S"};
+    char magic_byte[4] = {'M', 'R', 'F', 'S'};
     uint16_t number_of_data_blocks;
     uint16_t number_of_inodes;
     std::size_t block_size;
-    std::unique_ptr<uint8_t[]> free_blocks_bitmap;
 };
 
 struct INode
 {
     uint8_t valid;
-    SizeType file_size;
-    SizeType direct_pointers[NumberOfDirectPointers];
-    SizeType indirect_pointer;
+    uint32_t file_size;
+    uint32_t direct_pointers[2];
+    uint32_t indirect_pointer;
 
-    constexpr static size = sizeof(INode);
+    INode* next;
 };
 
-class MsRamFs : public FileSystem 
+class MsRamFs : public FileSystem
 {
-public: 
+public:
     static FormatReturnCode format(BlockDevice& device);
 
+    MountReturnCode mount(BlockDevice& device) override;
+
+    std::size_t create() override;
+    bool remove(std::size_t inode_index) override;
+    std::size_t stat(std::size_t inode_index) override;
+
+private:
+    SuperBlock super_block_;
+    INode* root_;
 };
 
 } // namespace msfs

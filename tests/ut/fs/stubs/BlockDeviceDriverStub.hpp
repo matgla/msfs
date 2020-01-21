@@ -30,11 +30,11 @@ template <std::size_t BlockSize, std::size_t NumberOfBlocks>
 class BlockDeviceDriverStub : public BlockDevice
 {
 public:
-    BlockDeviceDriverStub() : BlockDevice(BlockSize)
+    BlockDeviceDriverStub() : BlockDevice(BlockSize, NumberOfBlocks)
     {
     }
 
-    int read(std::size_t block_number, StreamType& stream) override
+    ReturnCode read(std::size_t block_number, StreamType& stream) override
     {
         if (block_number > NumberOfBlocks)
         {
@@ -44,11 +44,11 @@ public:
         const std::size_t size_to_copy = stream.size() >= BlockSize ? BlockSize : stream.size();
 
         std::copy(data_[block_number].begin(), data_[block_number].end(), stream.begin());
-        
+
         return ReturnCode::Ok;
     }
 
-    int write(std::size_t block_number, const StreamType& stream) override
+    ReturnCode write(std::size_t block_number, const StreamType& stream) override
     {
         if (block_number > NumberOfBlocks)
         {
@@ -61,8 +61,8 @@ public:
         }
 
         std::copy(stream.begin(), stream.end(), std::begin(data_[block_number]));
-        
-        return ReturnCode::Ok; 
+
+        return ReturnCode::Ok;
     }
 
 private:

@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 
 #include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
+#include "msfs/msramfs/msramfs.hpp"
 
 namespace msfs
 {
@@ -24,8 +25,11 @@ namespace msfs
 TEST(MsRamFsShould, FormatMemory)
 {
     BlockDeviceDriverStub<32, 4> block_device;
-        
-     
+
+    msramfs::MsRamFs sut;
+    sut.mount(block_device);
+
+
 }
 
 } // namespace msfs

@@ -20,6 +20,8 @@
 
 #include <gsl/span>
 
+#include "msfs/return_codes.hpp"
+
 namespace msfs
 {
 
@@ -28,23 +30,24 @@ class BlockDevice
 public:
     using StreamType = gsl::span<uint8_t>;
 
-    BlockDevice(const std::size_t block_size);
+    BlockDevice(const uint16_t block_size, const uint16_t number_of_blocks);
 
     virtual ~BlockDevice() = default;
 
-    std::size_t block_size() const;
-    std::size_t number_of_blocks() const;
+    std::uint16_t block_size() const;
+    std::uint16_t number_of_blocks() const;
 
     bool mounted() const;
-    void mount() const;
-    void umount() const;
+    void mount();
+    void umount();
 
-    virtual int read(std::size_t block_number, StreamType& stream) = 0;
-    virtual int write(std::size_t block_number, const StreamType& stream) = 0;
-    
+    virtual ReturnCode read(std::size_t block_number, StreamType& stream) = 0;
+    virtual ReturnCode write(std::size_t block_number, const StreamType& stream) = 0;
+
 private:
-    std::size_t block_size_;
-    std::size_t number_of_blocks_;
+    bool mounted_;
+    uint16_t block_size_;
+    uint16_t number_of_blocks_;
 };
 
 } // namespace msfs

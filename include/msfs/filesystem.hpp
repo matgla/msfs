@@ -1,4 +1,4 @@
-// This file is part of MSOS project. 
+// This file is part of MSOS project.
 // Copyright (C) 2020 Mateusz Stadnik
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,16 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#pragma once 
+#pragma once
 
-#include "msos/block_device.hpp"
+#include "msfs/block_device.hpp"
 
 namespace msfs
 {
 
 enum class MountReturnCode
 {
-    Ok
+    Ok,
+    DeviceIsAlreadyMounted
 };
 
 enum class FormatReturnCode
@@ -40,8 +41,8 @@ public:
     virtual ~FileSystem() = default;
 
     virtual MountReturnCode mount(BlockDevice& device) = 0;
-    
-    virtual std::size_t create() = 0; 
+
+    virtual std::size_t create() = 0;
     virtual bool remove(std::size_t inode_index) = 0;
     virtual std::size_t stat(std::size_t inode_index) = 0;
 
@@ -49,5 +50,5 @@ protected:
     static bool mounted_;
 };
 
-} // namespace msfs 
+} // namespace msfs
 

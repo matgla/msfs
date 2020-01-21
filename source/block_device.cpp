@@ -19,19 +19,19 @@
 namespace msfs
 {
 
-BlockDevice::BlockDevice(const std::size_t block_size)
-    : block_size_(block_size)
-    , mounted_(false)
+BlockDevice::BlockDevice(const uint16_t block_size, const uint16_t number_of_blocks)
+    : mounted_(false)
+    , block_size_(block_size)
+    , number_of_blocks_(number_of_blocks)
 {
-
 }
 
-bool BlockDevice::mounted() const 
+bool BlockDevice::mounted() const
 {
     return mounted_;
 }
 
-void BlockDevice::mount() 
+void BlockDevice::mount()
 {
     mounted_ = true;
 }
@@ -41,9 +41,14 @@ void BlockDevice::umount()
     mounted_ = false;
 }
 
-std::size_t BlockDevice::block_size() const
+std::uint16_t BlockDevice::block_size() const
 {
     return block_size_;
+}
+
+std::uint16_t BlockDevice::number_of_blocks() const
+{
+    return number_of_blocks_;
 }
 
 } // namespace msfs

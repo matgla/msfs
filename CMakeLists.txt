@@ -17,6 +17,7 @@ target_sources(msfs_msramfs
         ${include_dir}/msramfs/msramfs.hpp
     PRIVATE
         ${PROJECT_SOURCE_DIR}/source/block_device.cpp
+        ${PROJECT_SOURCE_DIR}/source/msramfs/msramfs.cpp
 )
 
 target_include_directories(msfs_msramfs

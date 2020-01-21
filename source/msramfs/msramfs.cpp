@@ -14,64 +14,84 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include "msfs/msramfs/msramfs.hpp"
+
+#include <cstring>
+
 #include "msfs/filesystem.hpp"
+#include "msfs/return_codes.hpp"
 
-namespace msfs 
+namespace msfs
 {
-
+namespace msramfs
+{
 FormatReturnCode clear(uint8_t* buffer, BlockDevice& device)
 {
-    std::memset(buffer, 0, device.block_size()); 
+    std::memset(buffer, 0, device.block_size());
 
     for (std::size_t i = 0; i < device.number_of_blocks(); ++i)
     {
-        RetrunCode status = device.write(i, gsl::make_span(buffer, device.block_size()));
+        ReturnCode status = device.write(i, gsl::make_span(buffer, device.block_size()));
         switch (status)
         {
             case ReturnCode::WrongBlockNumber: return FormatReturnCode::BlockNumbersMismatch;
             case ReturnCode::NotEnoughSpaceInBlock: return FormatReturnCode::WrongBlockSize;
-            case ReturnCode::Ok
+            case ReturnCode::Ok:
             {
             }
         }
-    }    
+    }
     return FormatReturnCode::Ok;
 }
 
-SuperBlock write_super_block(gsl::span<uint8_t> buffer, const BlockDevice& device)
+SuperBlock create_superblock(const BlockDevice& device)
 {
     SuperBlock sb;
     const int required_number_of_inodes = device.number_of_blocks() / 10;
-    const std::size_t required_size_of_inodes = number_of_inodes * INode::size;
-    const int inodes_in_superblock = (device.block_size() - sizeof(SuperBlock)) / INode::size; 
-   
-    const int inodes_outside_superblock = required_number_of_inodes - inodes_in_superblock; 
+    const std::size_t required_size_of_inodes = required_number_of_inodes * sizeof(INode);
+    const int inodes_in_superblock = (device.block_size() - sizeof(SuperBlock)) / sizeof(INode);
+
+    const int inodes_outside_superblock = required_number_of_inodes - inodes_in_superblock;
     const int required_blocks_for_inodes = inodes_outside_superblock > 0 ?
-        device.block_size() / (inodes_outsize_superblock * INode::size) 
+        device.block_size() / (inodes_outside_superblock * sizeof(INode))
         : 0;
-    
-    const int inodes_per_block = device.block() / INode::size;
+
+    const int inodes_per_block = device.number_of_blocks() / sizeof(INode);
 
     sb.number_of_inodes = inodes_in_superblock + required_blocks_for_inodes * inodes_per_block;
     sb.number_of_data_blocks = device.number_of_blocks() - 1 - required_blocks_for_inodes;
     sb.block_size = device.block_size();
 
-    std::memcpy(buffer.data(), &sb, sizeof(SuperBlock));
-
     return sb;
 }
 
-FormatReturnCode MsRamFs::format(BlockDevice& device)
+MountReturnCode MsRamFs::mount(BlockDevice& device)
 {
     if (device.mounted())
     {
-        return FormatReturnCode::DeviceIsMounted;
+        return MountReturnCode::DeviceIsAlreadyMounted;
     }
 
     std::unique_ptr<uint8_t[]> buffer(new uint8_t[device.block_size()]);
-    clear(buffer.get(), device); 
-    SuperBlock sb = write_super_block(buffer.get(), device);
+    clear(buffer.get(), device);
+    SuperBlock sb = create_superblock(device);
 };
 
-} // namespace msfs  
+std::size_t MsRamFs::create()
+{
+    return 1;
+}
+
+bool MsRamFs::remove(std::size_t inode_index)
+{
+    return true;
+}
+
+std::size_t MsRamFs::stat(std::size_t inode_index)
+{
+    return 0;
+}
+
+} // namespace msramfs
+} // namespace msfs
 
