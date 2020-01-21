@@ -74,7 +74,9 @@ MountReturnCode MsRamFs::mount(BlockDevice& device)
 
     std::unique_ptr<uint8_t[]> buffer(new uint8_t[device.block_size()]);
     clear(buffer.get(), device);
-    SuperBlock sb = create_superblock(device);
+    super_block_ = create_superblock(device);
+    device.mount();
+    return MountReturnCode::Ok;
 };
 
 std::size_t MsRamFs::create()

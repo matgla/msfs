@@ -29,6 +29,8 @@ namespace msramfs
 struct SuperBlock
 {
     char magic_byte[4] = {'M', 'R', 'F', 'S'};
+    uint16_t inodes_bitmap_size; 
+    uint16_t data_bitmap_size;
     uint16_t number_of_data_blocks;
     uint16_t number_of_inodes;
     std::size_t block_size;
@@ -37,11 +39,13 @@ struct SuperBlock
 struct INode
 {
     uint8_t valid;
-    uint32_t file_size;
-    uint32_t direct_pointers[2];
-    uint32_t indirect_pointer;
 
-    INode* next;
+    uint32_t file_size;
+    
+    uint32_t direct_pointers[12];
+    uint32_t indirect_pointer;
+    uint32_t double_indirect_pointer;
+    uint32_t triple_indirect_pointer; 
 };
 
 class MsRamFs : public FileSystem
@@ -56,8 +60,7 @@ public:
     std::size_t stat(std::size_t inode_index) override;
 
 private:
-    SuperBlock super_block_;
-    INode* root_;
+    SuperBlock* super_block_;
 };
 
 } // namespace msfs

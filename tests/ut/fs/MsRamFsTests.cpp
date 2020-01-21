@@ -22,14 +22,13 @@
 namespace msfs
 {
 
-TEST(MsRamFsShould, FormatMemory)
+TEST(MsRamFsShould, NotMountIfMounted)
 {
     BlockDeviceDriverStub<32, 4> block_device;
 
     msramfs::MsRamFs sut;
-    sut.mount(block_device);
-
-
+    EXPECT_EQ(MountReturnCode::Ok, sut.mount(block_device));
+    EXPECT_EQ(MountReturnCode::DeviceIsAlreadyMounted, sut.mount(block_device)); 
 }
 
 } // namespace msfs
