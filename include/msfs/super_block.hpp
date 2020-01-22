@@ -23,24 +23,15 @@
 
 namespace msfs
 {
-namespace msramfs
+
+struct SuperBlock
 {
-
-class MsRamFs : public FileSystem
-{
-public:
-    static FormatReturnCode format(BlockDevice& device);
-
-    MountReturnCode mount(BlockDevice& device) override;
-
-    std::size_t create() override;
-    bool remove(std::size_t inode_index) override;
-    std::size_t stat(std::size_t inode_index) override;
-
-private:
-    SuperBlock* super_block_;
+    char magic_byte[4] = {'M', 'R', 'F', 'S'};
+    uint16_t inodes_bitmap_size;
+    uint16_t data_bitmap_size;
+    uint16_t number_of_data_blocks;
+    uint16_t number_of_inodes;
+    std::size_t block_size;
 };
 
 } // namespace msfs
-} // namespace msos
-

@@ -18,29 +18,19 @@
 
 #include <cstdint>
 
-#include "msfs/block_device.hpp"
-#include "msfs/filesystem.hpp"
-
 namespace msfs
 {
-namespace msramfs
+
+struct INode
 {
+    uint8_t valid;
 
-class MsRamFs : public FileSystem
-{
-public:
-    static FormatReturnCode format(BlockDevice& device);
+    uint32_t file_size;
 
-    MountReturnCode mount(BlockDevice& device) override;
-
-    std::size_t create() override;
-    bool remove(std::size_t inode_index) override;
-    std::size_t stat(std::size_t inode_index) override;
-
-private:
-    SuperBlock* super_block_;
+    uint32_t direct_pointers[12];
+    uint32_t indirect_pointer;
+    uint32_t double_indirect_pointer;
+    uint32_t triple_indirect_pointer;
 };
 
 } // namespace msfs
-} // namespace msos
-
