@@ -24,7 +24,7 @@ namespace msfs
 
 TEST(MsRamFsShould, NotMountIfMounted)
 {
-    BlockDeviceDriverStub<32, 4> block_device;
+    BlockDeviceDriverStub block_device(128, 4, 4, 32);
 
     msramfs::MsRamFs sut;
     EXPECT_EQ(MountReturnCode::Ok, sut.mount(block_device));

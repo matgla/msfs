@@ -26,47 +26,18 @@
 namespace msfs
 {
 
-template <std::size_t BlockSize, std::size_t NumberOfBlocks>
 class BlockDeviceDriverStub : public BlockDevice
 {
 public:
-    BlockDeviceDriverStub() : BlockDevice(BlockSize, NumberOfBlocks)
-    {
-    }
+    BlockDeviceDriverStub(const std::size_t size, const std::size_t read_size,
+        const std::size_t write_size, const std::size_t erase_size); 
 
-    ReturnCode read(std::size_t block_number, StreamType& stream) override
-    {
-        if (block_number > NumberOfBlocks)
-        {
-            return ReturnCode::WrongBlockNumber;
-        }
-
-        const std::size_t size_to_copy = stream.size() >= BlockSize ? BlockSize : stream.size();
-
-        std::copy(data_[block_number].begin(), data_[block_number].end(), stream.begin());
-
-        return ReturnCode::Ok;
-    }
-
-    ReturnCode write(std::size_t block_number, const StreamType& stream) override
-    {
-        if (block_number > NumberOfBlocks)
-        {
-            return ReturnCode::WrongBlockNumber;
-        }
-
-        if (stream.size() > BlockSize)
-        {
-            return ReturnCode::NotEnoughSpaceInBlock;
-        }
-
-        std::copy(stream.begin(), stream.end(), std::begin(data_[block_number]));
-
-        return ReturnCode::Ok;
-    }
-
-private:
-    std::array<std::array<uint8_t, BlockSize>, NumberOfBlocks> data_;
+    int init() override;
+    int deinit() override;
+    
+    int read(std::size_t address, StreamType& stream) const override;
+    int write(std::size_t address, const StreamType& stream) override;
+    int erase(std::size_t address, std::size_t size) override; 
 };
 
 } // namespace msfs

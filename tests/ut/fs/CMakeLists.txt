@@ -19,7 +19,8 @@ add_executable(fs_tests)
 target_sources(fs_tests
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/stubs/BlockDeviceDriverStub.hpp
-
+        
+        ${CMAKE_CURRENT_SOURCE_DIR}/stubs/BlockDeviceDriverStub.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/MsRamFsTests.cpp
 )
 

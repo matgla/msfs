@@ -19,36 +19,68 @@
 namespace msfs
 {
 
-BlockDevice::BlockDevice(const uint16_t block_size, const uint16_t number_of_blocks)
-    : mounted_(false)
-    , block_size_(block_size)
-    , number_of_blocks_(number_of_blocks)
+BlockDevice::BlockDevice(const std::size_t size, const std::size_t read_size,
+    const std::size_t write_size, const std::size_t erase_size)
+    : size_(size)
+    , read_size_(read_size)
+    , write_size_(write_size)
+    , erase_size_(erase_size)
 {
 }
 
-bool BlockDevice::mounted() const
+SyncStatus BlockDevice::sync()
 {
-    return mounted_;
+    return SyncStatus::Ok;
 }
 
-void BlockDevice::mount()
+std::size_t BlockDevice::read_size() const 
 {
-    mounted_ = true;
+    return read_size_;
 }
 
-void BlockDevice::umount()
+std::size_t BlockDevice::write_size() const 
 {
-    mounted_ = false;
+    return write_size_;
 }
 
-std::uint16_t BlockDevice::block_size() const
+std::size_t BlockDevice::erase_size() const 
 {
-    return block_size_;
+    return erase_size_;
 }
 
-std::uint16_t BlockDevice::number_of_blocks() const
+std::size_t BlockDevice::erase_size_at_address(std::size_t address) const
 {
-    return number_of_blocks_;
+    return erase_size_;
+}
+
+std::size_t BlockDevice::size() const 
+{
+    return size_;
+}
+
+bool BlockDevice::is_write_valid(std::size_t address, const StreamType& stream) const
+{
+    if (address % write_size() != 0) return false;
+    if (stream.size() !=  write_size()) return false;
+ 
+    return address + stream.size() <= size();
+}
+
+bool BlockDevice::is_read_valid(std::size_t address, StreamType& stream) const
+{
+    if (address % read_size() != 0) return false;
+    if (stream.size() != read_size()) return false;
+
+    return address + stream.size() <= size();
+}
+
+bool BlockDevice::is_erase_valid(std::size_t address, std::size_t size) const
+{
+    if (address % erase_size_at_address(address) != 0) return false;
+    if (address + size != erase_size_at_address(address)) return false;
+
+    return address + size <= this->size();
 }
 
 } // namespace msfs
+

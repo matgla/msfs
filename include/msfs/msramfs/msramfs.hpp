@@ -20,6 +20,7 @@
 
 #include "msfs/block_device.hpp"
 #include "msfs/filesystem.hpp"
+#include "msfs/super_block.hpp"
 
 namespace msfs
 {

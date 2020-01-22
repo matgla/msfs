@@ -1,4 +1,4 @@
-// This file is part of MSOS project.
+// This file is part of MSOS project. 
 // Copyright (C) 2020 Mateusz Stadnik
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,47 +14,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "msfs/msramfs/msramfs.hpp"
-
-#include <cstring>
-
-#include "msfs/filesystem.hpp"
-#include "msfs/return_codes.hpp"
+#include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
 
 namespace msfs
 {
-namespace msramfs
+
+BlockDeviceDriverStub::BlockDeviceDriverStub(const std::size_t size,
+    const std::size_t read_size, const std::size_t write_size, 
+    const std::size_t erase_size) 
+    : BlockDevice(size, read_size, write_size, erase_size)
 {
-FormatReturnCode clear(uint8_t* buffer, BlockDevice& device)
-{
-    return FormatReturnCode::Ok;
 }
 
-SuperBlock create_superblock(const BlockDevice& device)
-{
-    return {};
-}
-
-MountReturnCode MsRamFs::mount(BlockDevice& device)
-{
-    return MountReturnCode::Ok;
-};
-
-std::size_t MsRamFs::create()
-{
-    return 1;
-}
-
-bool MsRamFs::remove(std::size_t inode_index)
-{
-    return true;
-}
-
-std::size_t MsRamFs::stat(std::size_t inode_index)
+int BlockDeviceDriverStub::init() 
 {
     return 0;
 }
 
-} // namespace msramfs
-} // namespace msfs
+int BlockDeviceDriverStub::deinit() 
+{
+    return 0;
+}
+
+int BlockDeviceDriverStub::read(std::size_t address, StreamType& stream) const 
+{
+    return 0;
+}
+
+int BlockDeviceDriverStub::write(std::size_t address, const StreamType& stream)  
+{
+    return 0;
+}
+
+
+int BlockDeviceDriverStub::erase(std::size_t address, std::size_t size) 
+{
+    return 0;
+}
+
+} // namespace msfs 
 

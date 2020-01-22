@@ -25,29 +25,45 @@
 namespace msfs
 {
 
+enum class SyncStatus 
+{
+    Ok
+};
+
 class BlockDevice
 {
 public:
     using StreamType = gsl::span<uint8_t>;
 
-    BlockDevice(const uint16_t block_size, const uint16_t number_of_blocks);
+    BlockDevice(const std::size_t size, const std::size_t read_size, const std::size_t write_size, const std::size_t erase_size);
 
     virtual ~BlockDevice() = default;
 
-    std::uint16_t block_size() const;
-    std::uint16_t number_of_blocks() const;
+    virtual int init() = 0;
+    virtual int deinit() = 0;
+    virtual SyncStatus sync();
 
-    bool mounted() const;
-    void mount();
-    void umount();
+    std::size_t read_size() const;
+    std::size_t write_size() const;
+    std::size_t erase_size() const;
+    virtual std::size_t erase_size_at_address(std::size_t address) const;
 
-    virtual ReturnCode read(std::size_t block_number, StreamType& stream) = 0;
-    virtual ReturnCode write(std::size_t block_number, const StreamType& stream) = 0;
 
-private:
-    bool mounted_;
-    uint16_t block_size_;
-    uint16_t number_of_blocks_;
+    std::size_t size() const;
+
+    virtual int read(std::size_t address, StreamType& stream) const = 0;
+    virtual int write(std::size_t address, const StreamType& stream) = 0;
+    virtual int erase(std::size_t address, std::size_t size) = 0;
+    
+protected:
+    bool is_write_valid(std::size_t address, const StreamType& stream) const;
+    bool is_read_valid(std::size_t address, StreamType& stream) const;
+    bool is_erase_valid(std::size_t address, std::size_t size) const;
+
+    std::size_t size_;
+    std::size_t read_size_;
+    std::size_t write_size_;
+    std::size_t erase_size_;
 };
 
 } // namespace msfs
