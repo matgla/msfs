@@ -42,24 +42,20 @@ int BlockDeviceDriverStub::deinit()
 
 ReadStatus BlockDeviceDriverStub::perform_read(std::size_t address, StreamType& stream) const
 {
-    if (is_read_valid(address, stream))
-    {
-
-    }
-    UNUSED2(address, stream);
+    std::copy(buffer_.begin() + address, buffer_.begin() + address + stream.size(), stream.begin()); 
     return ReadStatus::Ok;
 }
 
 WriteStatus BlockDeviceDriverStub::perform_write(std::size_t address, const StreamType& stream)
 {
-    UNUSED2(address, stream);
+    std::copy(stream.begin(), stream.end(), buffer_.begin() + address);
     return WriteStatus::Ok;
 }
 
 
 EraseStatus BlockDeviceDriverStub::perform_erase(std::size_t address, std::size_t size)
 {
-    UNUSED2(address, size);
+    std::memset(buffer_.data() + address, size);
     return EraseStatus::Ok;
 }
 

@@ -70,6 +70,7 @@ ReadStatus BlockDevice::read(std::size_t address, StreamType& stream) const
     }
 
     perform_read(address, stream);
+    return ReadStatus::Ok;
 }
 
 WriteStatus BlockDevice::write(std::size_t address, const StreamType& stream)
@@ -78,7 +79,8 @@ WriteStatus BlockDevice::write(std::size_t address, const StreamType& stream)
     {
         return WriteStatus::Fail;
     }
-
+    perform_write(address, stream);
+    return WriteStatus::Ok;
 }
 
 EraseStatus BlockDevice::erase(std::size_t address, std::size_t size)
@@ -87,7 +89,8 @@ EraseStatus BlockDevice::erase(std::size_t address, std::size_t size)
     {
         return EraseStatus::Fail;
     }
-
+    perform_erase(address, size);
+    return EraseStatus::Ok;
 }
 
 bool BlockDevice::is_write_valid(std::size_t address, const StreamType& stream) const
