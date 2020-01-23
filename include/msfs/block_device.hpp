@@ -17,6 +17,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string_view>
 
 #include <gsl/span>
 
@@ -25,9 +26,27 @@
 namespace msfs
 {
 
-enum class SyncStatus 
+enum class SyncStatus
 {
     Ok
+};
+
+enum class ReadStatus
+{
+    Ok,
+    Fail
+};
+
+enum class WriteStatus
+{
+    Ok,
+    Fail
+};
+
+enum class EraseStatus
+{
+    Ok,
+    Fail
 };
 
 class BlockDevice
@@ -51,14 +70,20 @@ public:
 
     std::size_t size() const;
 
-    virtual int read(std::size_t address, StreamType& stream) const = 0;
-    virtual int write(std::size_t address, const StreamType& stream) = 0;
-    virtual int erase(std::size_t address, std::size_t size) = 0;
-    
+    virtual ReadStatus read(std::size_t address, StreamType& stream) const;
+    virtual WriteStatus write(std::size_t address, const StreamType& stream);
+    virtual EraseStatus erase(std::size_t address, std::size_t size);
+
+    virtual std::string_view name() const = 0;
+
 protected:
     bool is_write_valid(std::size_t address, const StreamType& stream) const;
     bool is_read_valid(std::size_t address, StreamType& stream) const;
     bool is_erase_valid(std::size_t address, std::size_t size) const;
+
+    virtual ReadStatus perform_read(std::size_t address, StreamType& stream) const = 0;
+    virtual WriteStatus perform_write(std::size_t address, const StreamType& stream) = 0;
+    virtual EraseStatus perform_erase(std::size_t address, std::size_t size) = 0;
 
     std::size_t size_;
     std::size_t read_size_;

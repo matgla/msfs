@@ -18,6 +18,8 @@
 
 #include <cstring>
 
+#include <eul/utils/unused.hpp>
+
 #include "msfs/filesystem.hpp"
 #include "msfs/return_codes.hpp"
 
@@ -27,18 +29,21 @@ namespace msramfs
 {
 FormatReturnCode clear(uint8_t* buffer, BlockDevice& device)
 {
+    UNUSED2(buffer, device);
     return FormatReturnCode::Ok;
 }
 
 SuperBlock create_superblock(const BlockDevice& device)
 {
+    UNUSED1(device);
     return {};
 }
 
 MountReturnCode MsRamFs::mount(BlockDevice& device)
 {
+    UNUSED1(device);
     return MountReturnCode::Ok;
-};
+}
 
 std::size_t MsRamFs::create()
 {
@@ -47,11 +52,13 @@ std::size_t MsRamFs::create()
 
 bool MsRamFs::remove(std::size_t inode_index)
 {
+    UNUSED1(inode_index);
     return true;
 }
 
 std::size_t MsRamFs::stat(std::size_t inode_index)
 {
+    UNUSED1(inode_index);
     return 0;
 }
 

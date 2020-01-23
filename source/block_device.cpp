@@ -16,6 +16,8 @@
 
 #include "msfs/block_device.hpp"
 
+#include <eul/utils/unused.hpp>
+
 namespace msfs
 {
 
@@ -33,53 +35,85 @@ SyncStatus BlockDevice::sync()
     return SyncStatus::Ok;
 }
 
-std::size_t BlockDevice::read_size() const 
+std::size_t BlockDevice::read_size() const
 {
     return read_size_;
 }
 
-std::size_t BlockDevice::write_size() const 
+std::size_t BlockDevice::write_size() const
 {
     return write_size_;
 }
 
-std::size_t BlockDevice::erase_size() const 
+std::size_t BlockDevice::erase_size() const
 {
     return erase_size_;
 }
 
 std::size_t BlockDevice::erase_size_at_address(std::size_t address) const
 {
+    UNUSED1(address);
+
     return erase_size_;
 }
 
-std::size_t BlockDevice::size() const 
+std::size_t BlockDevice::size() const
 {
     return size_;
+}
+
+ReadStatus BlockDevice::read(std::size_t address, StreamType& stream) const
+{
+    if (!is_read_valid(address, stream))
+    {
+        return ReadStatus::Fail;
+    }
+
+    perform_read(address, stream);
+}
+
+WriteStatus BlockDevice::write(std::size_t address, const StreamType& stream)
+{
+    if(!is_write_valid(address, stream))
+    {
+        return WriteStatus::Fail;
+    }
+
+}
+
+EraseStatus BlockDevice::erase(std::size_t address, std::size_t size)
+{
+    if(!is_erase_valid(address, size))
+    {
+        return EraseStatus::Fail;
+    }
+
 }
 
 bool BlockDevice::is_write_valid(std::size_t address, const StreamType& stream) const
 {
     if (address % write_size() != 0) return false;
-    if (stream.size() !=  write_size()) return false;
- 
-    return address + stream.size() <= size();
+    if (static_cast<std::size_t>(stream.size()) != write_size()) return false;
+    if (address + stream.size() > size()) return false;
+    return true;
 }
 
 bool BlockDevice::is_read_valid(std::size_t address, StreamType& stream) const
 {
     if (address % read_size() != 0) return false;
-    if (stream.size() != read_size()) return false;
+    if (static_cast<std::size_t>(stream.size()) != read_size()) return false;
+    if (address + stream.size() > size()) return false;
 
-    return address + stream.size() <= size();
+    return true;
 }
 
 bool BlockDevice::is_erase_valid(std::size_t address, std::size_t size) const
 {
     if (address % erase_size_at_address(address) != 0) return false;
     if (address + size != erase_size_at_address(address)) return false;
+    if (address + size > this->size()) return false;
 
-    return address + size <= this->size();
+    return true;
 }
 
 } // namespace msfs

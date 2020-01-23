@@ -10,7 +10,6 @@ set (include_dir "${PROJECT_SOURCE_DIR}/include/msfs")
 
 add_library(msfs_msramfs STATIC)
 
-
 target_sources(msfs_msramfs
     PUBLIC
         ${include_dir}/block_device.hpp
@@ -27,7 +26,14 @@ target_include_directories(msfs_msramfs
 
 target_link_libraries(msfs_msramfs
     PUBLIC
-        gsl
+        GSL
+        eul
+)
+
+target_compile_options(msfs_msramfs PUBLIC
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++2a -Wall -Werror -Wextra -Wpedantic -Wconversion -Wcast-align -Wunused -Wshadow -Wold-style-cast -Wpointer-arith -Wcast-qual -Wno-missing-braces>
+    $<$<CONFIG:DEBUG>:-Og -g>
+    $<$<CONFIG:RELEASE>:-Os>
 )
 
 if (NOT DISABLE_TESTS)

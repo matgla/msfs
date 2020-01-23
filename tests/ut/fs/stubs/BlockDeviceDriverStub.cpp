@@ -1,4 +1,4 @@
-// This file is part of MSOS project. 
+// This file is part of MSOS project.
 // Copyright (C) 2020 Mateusz Stadnik
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,41 +16,57 @@
 
 #include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
 
+#include <eul/utils/unused.hpp>
+
 namespace msfs
 {
 
 BlockDeviceDriverStub::BlockDeviceDriverStub(const std::size_t size,
-    const std::size_t read_size, const std::size_t write_size, 
-    const std::size_t erase_size) 
+    const std::size_t read_size, const std::size_t write_size,
+    const std::size_t erase_size)
     : BlockDevice(size, read_size, write_size, erase_size)
+    , buffer_{}
 {
+    buffer_.resize(size, 0);
 }
 
-int BlockDeviceDriverStub::init() 
-{
-    return 0;
-}
-
-int BlockDeviceDriverStub::deinit() 
+int BlockDeviceDriverStub::init()
 {
     return 0;
 }
 
-int BlockDeviceDriverStub::read(std::size_t address, StreamType& stream) const 
+int BlockDeviceDriverStub::deinit()
 {
     return 0;
 }
 
-int BlockDeviceDriverStub::write(std::size_t address, const StreamType& stream)  
+ReadStatus BlockDeviceDriverStub::perform_read(std::size_t address, StreamType& stream) const
 {
-    return 0;
+    if (is_read_valid(address, stream))
+    {
+
+    }
+    UNUSED2(address, stream);
+    return ReadStatus::Ok;
+}
+
+WriteStatus BlockDeviceDriverStub::perform_write(std::size_t address, const StreamType& stream)
+{
+    UNUSED2(address, stream);
+    return WriteStatus::Ok;
 }
 
 
-int BlockDeviceDriverStub::erase(std::size_t address, std::size_t size) 
+EraseStatus BlockDeviceDriverStub::perform_erase(std::size_t address, std::size_t size)
 {
-    return 0;
+    UNUSED2(address, size);
+    return EraseStatus::Ok;
 }
 
-} // namespace msfs 
+std::string_view BlockDeviceDriverStub::name() const
+{
+    return "BD_STUB";
+}
+
+} // namespace msfs
 

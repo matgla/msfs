@@ -18,7 +18,7 @@
 
 #include <cstdint>
 #include <list>
-#include <array>
+#include <vector>
 
 #include "msfs/block_device.hpp"
 #include "msfs/return_codes.hpp"
@@ -30,14 +30,20 @@ class BlockDeviceDriverStub : public BlockDevice
 {
 public:
     BlockDeviceDriverStub(const std::size_t size, const std::size_t read_size,
-        const std::size_t write_size, const std::size_t erase_size); 
+        const std::size_t write_size, const std::size_t erase_size);
 
     int init() override;
     int deinit() override;
-    
-    int read(std::size_t address, StreamType& stream) const override;
-    int write(std::size_t address, const StreamType& stream) override;
-    int erase(std::size_t address, std::size_t size) override; 
+
+    std::string_view name() const override;
+
+protected:
+    ReadStatus perform_read(std::size_t address, StreamType& stream) const override;
+    WriteStatus perform_write(std::size_t address, const StreamType& stream) override;
+    EraseStatus perform_erase(std::size_t address, std::size_t size) override;
+
+private:
+    std::vector<uint8_t> buffer_;
 };
 
 } // namespace msfs
