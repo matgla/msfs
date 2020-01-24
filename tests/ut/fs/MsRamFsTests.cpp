@@ -17,18 +17,18 @@
 #include <gtest/gtest.h>
 
 #include "tests/ut/fs/stubs/BlockDeviceDriverStub.hpp"
-#include "msfs/msramfs/msramfs.hpp"
+#include "msfs/mstmpfs/mstmpfs.hpp"
 
 namespace msfs
 {
 
-TEST(MsRamFsShould, NotMountIfMounted)
+TEST(MsTmpFsShould, NotMountIfMounted)
 {
     BlockDeviceDriverStub block_device(128, 4, 4, 32);
 
-    msramfs::MsRamFs sut;
+    mstmpfs::MsTmpFs sut;
     EXPECT_EQ(MountReturnCode::Ok, sut.mount(block_device));
-    EXPECT_EQ(MountReturnCode::DeviceIsAlreadyMounted, sut.mount(block_device)); 
+    EXPECT_EQ(MountReturnCode::DeviceIsAlreadyMounted, sut.mount(block_device));
 }
 
 } // namespace msfs

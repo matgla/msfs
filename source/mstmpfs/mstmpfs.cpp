@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "msfs/msramfs/msramfs.hpp"
+#include "msfs/mstmpfs/mstmpfs.hpp"
 
 #include <cstring>
 
@@ -25,8 +25,9 @@
 
 namespace msfs
 {
-namespace msramfs
+namespace mstmpfs
 {
+
 FormatReturnCode clear(uint8_t* buffer, BlockDevice& device)
 {
     UNUSED2(buffer, device);
@@ -39,29 +40,29 @@ SuperBlock create_superblock(const BlockDevice& device)
     return {};
 }
 
-MountReturnCode MsRamFs::mount(BlockDevice& device)
+MountReturnCode MsTmpFs::mount(BlockDevice& device)
 {
     UNUSED1(device);
     return MountReturnCode::Ok;
 }
 
-std::size_t MsRamFs::create()
+std::size_t MsTmpFs::create()
 {
     return 1;
 }
 
-bool MsRamFs::remove(std::size_t inode_index)
+bool MsTmpFs::remove(std::size_t inode_index)
 {
     UNUSED1(inode_index);
     return true;
 }
 
-std::size_t MsRamFs::stat(std::size_t inode_index)
+std::size_t MsTmpFs::stat(std::size_t inode_index)
 {
     UNUSED1(inode_index);
     return 0;
 }
 
-} // namespace msramfs
+} // namespace mstmpfs
 } // namespace msfs
 

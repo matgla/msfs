@@ -16,30 +16,33 @@
 
 #pragma once
 
-#include <string_view>
+#include <cstdint>
 
 #include "msfs/block_device.hpp"
+#include "msfs/filesystem.hpp"
+#include "msfs/super_block.hpp"
 
 namespace msfs
 {
+namespace mstmpfs
+{
 
-class FileSystem
+class MsTmpFs : public FileSystem
 {
 public:
-    virtual ~FileSystem() = default;
+    int mount(BlockDevice& device) override;
+    int umount() override;
 
-    virtual int mount(BlockDevice& device) = 0;
-    virtual int umount() = 0;
+    int create() override;
+    int mkdir(const std::string_view path, int mode) override;
 
-    virtual int create() = 0;
-    virtual int mkdir(const std::string_view path, int mode) = 0;
+    int remove(const std::string_view path) override;
+    int stat(const std::string_view path) override;
 
-    virtual int remove(const std::string_view path) = 0;
-    virtual int stat(const std::string_view path) = 0;
-
-protected:
-    static bool mounted_;
+private:
+    SuperBlock* super_block_;
 };
 
 } // namespace msfs
+} // namespace msos
 

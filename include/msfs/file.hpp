@@ -18,30 +18,28 @@
 
 #include <cstdint>
 
-#include "msfs/block_device.hpp"
-#include "msfs/filesystem.hpp"
-#include "msfs/super_block.hpp"
+#include <unistd.h>
+
+#include <gsl/span.hpp>
 
 namespace msfs
 {
-namespace msramfs
-{
 
-class MsRamFs : public FileSystem
+class File
 {
 public:
-    static FormatReturnCode format(BlockDevice& device);
+    using DataType = gsl::span<uint8_t>;
 
-    MountReturnCode mount(BlockDevice& device) override;
+    virtual ~File() = default;
 
-    std::size_t create() override;
-    bool remove(std::size_t inode_index) override;
-    std::size_t stat(std::size_t inode_index) override;
+    virtual ssize_t read(DataType& data) const = 0;
+    virtual ssize_t write(const DataType& data) = 0;
+    virtual off_t seek(off_t offset, int base) const = 0;
+    virtual int close() = 0;
+    virtual int sync() = 0;
 
-private:
-    SuperBlock* super_block_;
+    virtual off_t tell() const;
+    virtual ssize_t size() const;
 };
 
 } // namespace msfs
-} // namespace msos
-

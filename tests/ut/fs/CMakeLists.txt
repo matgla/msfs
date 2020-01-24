@@ -19,9 +19,9 @@ add_executable(fs_tests)
 target_sources(fs_tests
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/stubs/BlockDeviceDriverStub.hpp
-        
+
         ${CMAKE_CURRENT_SOURCE_DIR}/stubs/BlockDeviceDriverStub.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/MsRamFsTests.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/MsTmpFsTests.cpp
 )
 
 target_link_libraries(fs_tests
@@ -29,7 +29,7 @@ target_link_libraries(fs_tests
         gtest
         gmock
         gtest_main
-        msfs_msramfs
+        msfs_mstmpfs
 )
 
 target_include_directories(fs_tests

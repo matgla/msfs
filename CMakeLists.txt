@@ -8,29 +8,29 @@ add_library(msfs INTERFACE)
 
 set (include_dir "${PROJECT_SOURCE_DIR}/include/msfs")
 
-add_library(msfs_msramfs STATIC)
+add_library(msfs_mstmpfs STATIC)
 
-target_sources(msfs_msramfs
+target_sources(msfs_mstmpfs
     PUBLIC
         ${include_dir}/block_device.hpp
-        ${include_dir}/msramfs/msramfs.hpp
+        ${include_dir}/mstmpfs/mstmpfs.hpp
     PRIVATE
         ${PROJECT_SOURCE_DIR}/source/block_device.cpp
-        ${PROJECT_SOURCE_DIR}/source/msramfs/msramfs.cpp
+        ${PROJECT_SOURCE_DIR}/source/mstmpfs/mstmpfs.cpp
 )
 
-target_include_directories(msfs_msramfs
+target_include_directories(msfs_mstmpfs
     PUBLIC
         ${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_libraries(msfs_msramfs
+target_link_libraries(msfs_mstmpfs
     PUBLIC
         GSL
         eul
 )
 
-target_compile_options(msfs_msramfs PUBLIC
+target_compile_options(msfs_mstmpfs PUBLIC
     $<$<COMPILE_LANGUAGE:CXX>:-std=c++2a -Wall -Werror -Wextra -Wpedantic -Wconversion -Wcast-align -Wunused -Wshadow -Wold-style-cast -Wpointer-arith -Wcast-qual -Wno-missing-braces>
     $<$<CONFIG:DEBUG>:-Og -g>
     $<$<CONFIG:RELEASE>:-Os>
